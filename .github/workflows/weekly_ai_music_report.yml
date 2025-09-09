@@ -21,21 +21,45 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 18
-        cache: 'npm'
+        # 暂时停用q���Þ避免污染
+        # cache: 'npm'
 
-    - name: Prepare npm
+    - name: Aggressive npm cache clearing
       run: |
+        # 完兼清理所有npm缓存
         npm cache clean --force
+        rm -rf ~/.npm
+        rm -rf node_modules
+        rm -rf package-lock.json
+        
+        # 重新酵据npm
         npm config set registry https://registry.npmjs.org/
         npm config set strict-ssl true
-        npm config set fetch-retries 5
+        npm config set fetch-retries 10
         npm config set fetch-retry-mintimeout 20000
         npm config set fetch-retry-maxtimeout 120000
+        npm config set cache-max 0
+        npm config set prefer-online true
 
-    - name: Install dependencies
+    - name: Install dependencies with retries
       run: |
-        # 尝试使用npm ci，如果失败则使用npm install同步lock文件
-        npm ci --no-audit --no-fund || (echo "npm ci failed, syncing lock file..." && npm install --no-audit --no-fund)
+        # 多槡1g�s安装萄裃，每斡ἔ领Q��ov�7
+        for i in {1..3}; do
+          echo "Attempt $i of 3"
+          if npm install --no-audit --no-fund --prefer-online; then
+            echo "Installation successful on attempt $i"
+            break
+          else
+            echo "Attempt $i failed, cleaning and retrying..."
+            npm cache clean --force
+            rm -rf node_modules
+            sleep 10
+            if [ $i -eq 3 ]; then
+              echo "All attempts failed"
+              exit 1
+            fi
+          fi
+        done
 
     - name: Generate weekly AI music report
       env:
