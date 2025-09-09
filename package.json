@@ -1,0 +1,23 @@
+{
+  "name": "ai-music-weekly-report",
+  "version": "1.0.0",
+  "description": "Automation for generating and publishing AI music weekly reports via GitHub Actions",
+  "main": "scripts/generateWeeklyReport.js",
+  "scripts": {
+    "start": "node scripts/generateWeeklyReport.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "moment": "^2.30.0"
+  },
+  "keywords": [
+    "ai-music",
+    "automation",
+    "github-actions",
+    "notion",
+    "weekly-report"
+  ],
+  "author": "milkr",
+  "license": "MIT"
+}
