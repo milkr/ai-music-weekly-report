@@ -12,20 +12,20 @@ env:
 jobs:
   generate_report:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
+    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
-
+        # 砋除缓存配置以避免package-lock.json斚颙
+    
     - name: Install dependencies
       run: npm install
-
+    
     - name: Generate weekly AI music report
       env:
         COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
@@ -36,7 +36,7 @@ jobs:
         echo "Current time: $(date)"
         echo "Beijing time: $(TZ=Asia/Shanghai date)"
         node scripts/generateWeeklyReport.js
-
+    
     - name: Create workflow summary
       if: always()
       run: |
