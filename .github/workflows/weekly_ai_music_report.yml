@@ -1,0 +1,46 @@
+name: Weekly AI Music Report
+
+on:
+  schedule:
+    # 每周一上午9:00 Beijing time (UTC+8) = 每周一凌晨1:00 UTC
+    - cron: '0 1 * * 1'
+  workflow_dispatch: # 允许手动触发
+
+env:
+  TZ: Asia/Shanghai
+
+jobs:
+  generate_report:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate weekly AI music report
+      env:
+        COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
+        NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo "Starting weekly AI music report generation..."
+        echo "Current time: $(date)"
+        echo "Beijing time: $(TZ=Asia/Shanghai date)"
+        node scripts/generateWeeklyReport.js
+
+    - name: Create workflow summary
+      if: always()
+      run: |
+        echo "## Weekly AI Music Report Generation" >> $GITHUB_STEP_SUMMARY
+        echo "**Execution Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "**Beijing Time:** $(TZ=Asia/Shanghai date)" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
