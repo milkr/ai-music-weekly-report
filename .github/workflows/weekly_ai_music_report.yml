@@ -61,6 +61,38 @@ jobs:
           exit 1
         fi
     
+    - name: Update Google Sheets
+      if: env.GOOGLE_SHEET_ID != ''
+      uses: jroehl/gsheet.action@v1.0.0
+      with:
+        spreadsheetId: ${{ secrets.GOOGLE_SHEET_ID }}
+        commands: |
+          [
+            {
+              "command": "addWorksheet",
+              "args": {
+                "worksheetTitle": "AI Music Report $(date +%Y%m%d)"
+              }
+            },
+            {
+              "command": "updateData",
+              "args": {
+                "worksheetTitle": "AI Music Report $(date +%Y%m%d)",
+                "data": [
+                  ["日期", "数据类型", "数量", "说明"],
+                  ["$(date +%Y-%m-%d)", "总帖子数", "150", "模拟数据"],
+                  ["$(date +%Y-%m-%d)", "推特帖子", "80", "模拟数据"],
+                  ["$(date +%Y-%m-%d)", "Reddit帖子", "70", "模拟数据"],
+                  ["$(date +%Y-%m-%d)", "Suno提及", "45", "模拟数据"],
+                  ["$(date +%Y-%m-%d)", "Udio提及", "28", "模拟数据"]
+                ]
+              }
+            }
+          ]
+      env:
+        GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+        GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+    
     - name: Summary
       if: always()
       run: |
