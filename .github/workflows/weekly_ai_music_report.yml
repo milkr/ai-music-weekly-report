@@ -8,7 +8,7 @@ on:
         required: false
         default: 'false'
   schedule:
-    - cron: '0 1 * * 1'  # Monday 9AM Beijing time
+    - cron: '0 1 * * 1'  # Monday 9AM Beijing time (UTC+8), 1AM UTC
 
 jobs:
   generate_report:
@@ -47,8 +47,7 @@ jobs:
     
     - name: Generate report
       env:
-        COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
-        NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
       run: |
         echo "🚀 Starting AI Music Weekly Report..."
         echo "📇 Current time: $(date)"
