@@ -1,24 +1,6 @@
 const axios = require('axios');
 const moment = require('moment');
 
-// Google Sheets保存函数
-async function saveToGoogleSheets(sheetId, data) {
-    const serviceAccountEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-    const privateKey = process.env.GOOGLE_PRIVATE_KEY;
-    
-    if (!serviceAccountEmail || !privateKey) {
-        throw new Error('缺少Google Service Account认证信息');
-    }
-    
-    // 这里可以实现Google Sheets API调用
-    // 由于需要JWT token生成，简化处理
-    console.log('🔐 检测到Google认证信息，尝试保存到表格...');
-    console.log('📧 Service Account:', serviceAccountEmail);
-    
-    // 模拟保存成功
-    console.log('✅ 数据已保存到Google Sheets (模拟)');
-    return true;
-}
 
 async function generateWeeklyReport() {
     console.log('🚀 开始生成AI音乐周报...');
@@ -84,13 +66,7 @@ async function generateWeeklyReport() {
         console.log('💾 周报数据已生成，准备保存...');
         console.log('🔗 目标表格: https://docs.google.com/spreadsheets/d/' + googleSheetId);
         
-        // 尝试通过Google Sheets API保存数据
-        try {
-            await saveToGoogleSheets(googleSheetId, mockData);
-        } catch (sheetsError) {
-            console.log('⚠️  Google Sheets保存失败，数据已在日志中输出:', sheetsError.message);
-            console.log('💡 如需自动保存到表格，请在GitHub Secrets中配置Google Service Account认证');
-        }
+        console.log('💡 如需保存到Google Sheets，请在有Rube MCP访问权限的环境中运行更新脚本');
         
         // 输出结构化数据供后续处理
         const reportSummary = {
